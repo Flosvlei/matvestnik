@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>МатВестник</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<style>
+/* ===== GLOBAL RESET & BASE ===== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+font-family: 'Georgia', 'Times New Roman', serif;
+background: #ffffff;
+color: #1a1a2e;
+line-height: 1.8;
+font-size: 16px;
+}
+
+/* ===== SKIP LINK ===== */
+.skip-link {
+position: absolute;
+top: -100px;
+left: 0;
+background: #4a90d9;
+color: #fff;
+padding: 12px 24px;
+z-index: 1000;
+font-family: 'Segoe UI', sans-serif;
+font-size: 0.95rem;
+text-decoration: none;
+font-weight: 600;
+transition: top 0.2s;
+}
+.skip-link:focus {
+top: 0;
+}
+
+/* ===== VISIBLE FOCUS ===== */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+input[type="checkbox"]:focus-visible {
+outline: 2px solid #4a90d9;
+outline-offset: 2px;
+}
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible) {
+outline: none;
+}
+
+/* ===== SCREEN READER ONLY ===== */
+.sr-only {
+position: absolute;
+width: 1px;
+height: 1px;
+padding: 0;
+margin: -1px;
+overflow: hidden;
+clip: rect(0, 0, 0, 0);
+white-space: nowrap;
+border: 0;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 16px 50px;
+border-bottom: 1px solid #e8e8e8;
+background: #fff;
+position: sticky;
+top: 0;
+z-index: 100;
+}
+.navbar-left {
+display: flex;
+align-items: center;
+flex-shrink: 0;
+}
+.navbar-brand {
+font-size: 1.4rem;
+font-weight: 700;
+color: #1a1a2e;
+text-decoration: none;
+font-family: 'Georgia', serif;
+}
+.navbar-search {
+display: flex;
+align-items: center;
+gap: 8px;
+color: #888;
+font-size: 0.9rem;
+margin-left: 24px;
+font-family: 'Segoe UI', sans-serif;
+position: relative;
+cursor: default;
+}
+.navbar-search::after {
+content: attr(data-tooltip);
+position: absolute;
+top: calc(100% + 8px);
+left: 0;
+background: #1a1a2e;
+color: #fff;
+padding: 6px 12px;
+border-radius: 4px;
+font-size: 0.78rem;
+white-space: nowrap;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.2s;
+z-index: 10;
+}
+.navbar-search:hover::after,
+.navbar-search:focus-visible::after { opacity: 1; }
+
+.navbar-center {
+display: flex;
+align-items: center;
+gap: 28px;
+list-style: none;
+position: absolute;
+left: 50%;
+transform: translateX(-50%);
+}
+.navbar-center a {
+text-decoration: none;
+color: #666;
+font-size: 0.9rem;
+font-family: 'Segoe UI', sans-serif;
+cursor: default;
+position: relative;
+transition: color 0.2s;
+}
+.navbar-center a:hover { color: #1a1a2e; }
+.navbar-center a::after {
+content: attr(data-tooltip);
+position: absolute;
+top: calc(100% + 8px);
+left: 50%;
+transform: translateX(-50%);
+background: #1a1a2e;
+color: #fff;
+padding: 6px 12px;
+border-radius: 4px;
+font-size: 0.78rem;
+white-space: nowrap;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.2s;
+z-index: 10;
+}
+.navbar-center a:hover::after,
+.navbar-center a:focus-visible::after { opacity: 1; }
+
+.navbar-right {
+display: flex;
+align-items: center;
+flex-shrink: 0;
+}
+.navbar-notes {
+text-decoration: none;
+color: #4a90d9;
+font-size: 0.9rem;
+font-family: 'Segoe UI', sans-serif;
+cursor: default;
+position: relative;
+transition: color 0.2s;
+}
+.navbar-notes:hover { color: #3a7bc8; }
+.navbar-notes::after {
+content: attr(data-tooltip);
+position: absolute;
+top: calc(100% + 8px);
+left: 50%;
+transform: translateX(-50%);
+background: #1a1a2e;
+color: #fff;
+padding: 6px 12px;
+border-radius: 4px;
+font-size: 0.78rem;
+white-space: nowrap;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.2s;
+z-index: 10;
+}
+.navbar-notes:hover::after,
+.navbar-notes:focus-visible::after { opacity: 1; }
+
+/* ===== MAIN LAYOUT ===== */
+.page-wrapper {
+max-width: 780px;
+margin: 0 auto;
+margin-left: calc(50% - 468px);
+padding: 60px 50px 80px;
+}
+
+/* ===== TITLE ===== */
+.page-title {
+font-size: 2.4rem;
+line-height: 1.25;
+color: #1a1a2e;
+margin-bottom: 16px;
+font-weight: 700;
+letter-spacing: -0.5px;
+}
+
+/* ===== STATUS BADGE ===== */
+.status-badge {
+display: inline-flex;
+align-items: center;
+gap: 12px;
+background: #eef3fb;
+border: 1.5px solid #4a90d9;
+border-radius: 24px;
+padding: 12px 24px;
+font-family: 'Segoe UI', sans-serif;
+font-size: 1rem;
+color: #1a1a2e;
+font-weight: 700;
+margin: 24px 0 36px;
+letter-spacing: 0.2px;
+}
+.status-dot {
+width: 12px;
+height: 12px;
+background: #4a90d9;
+border-radius: 50%;
+animation: pulse 2s ease-in-out infinite;
+flex-shrink: 0;
+}
+@keyframes pulse {
+0%, 100% { opacity: 1; transform: scale(1); }
+50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* ===== ABSTRACT BOX ===== */
+.abstract-box {
+background: #f8f9fc;
+border-left: 3px solid #4a90d9;
+padding: 24px 28px;
+margin-bottom: 40px;
+border-radius: 0 6px 6px 0;
+}
+.abstract-box h2 {
+font-size: 1.1rem;
+font-family: 'Segoe UI', sans-serif;
+color: #1a1a2e;
+margin-bottom: 12px;
+font-weight: 700;
+}
+.abstract-box p {
+font-size: 1 rem;
+color: #444;
+line-height: 1.7;
+margin-bottom: 10px;
+}
+
+/* ===== CONTENT SECTIONS ===== */
+.page-body h2 {
+font-size: 1.4rem;
+color: #1a1a2e;
+margin-top: 44px;
+margin-bottom: 16px;
+font-weight: 700;
+letter-spacing: -0.3px;
+}
+.page-body h2:first-of-type { margin-top: 0; }
+.page-body p {
+font-size: 1rem;
+color: #333;
+line-height: 1.85;
+margin-bottom: 16px;
+text-align: justify;
+}
+.page-body strong { color: #1a1a2e; }
+
+/* ===== AUDIENCE LIST ===== */
+.audience-list {
+list-style: none;
+padding: 0;
+margin: 20px 0;
+}
+.audience-list li {
+font-size: 0.95rem;
+color: #444;
+padding: 12px 0;
+border-bottom: 1px solid #e8e8e8;
+line-height: 1.6;
+font-family: 'Segoe UI', sans-serif;
+}
+.audience-list li:last-child { border-bottom: none; }
+.audience-list li::before {
+content: "→ ";
+color: #4a90d9;
+font-weight: 700;
+margin-right: 6px;
+}
+
+/* ===== DIVIDER ===== */
+.section-divider {
+border: none;
+border-top: 1px solid #e8e8e8;
+margin: 40px 0;
+}
+
+/* ===== EMAIL FORM ===== */
+.signup-box {
+background: #f8f9fc;
+border: 1px solid #d8dde8;
+border-radius: 8px;
+padding: 32px 36px;
+margin: 40px 0;
+}
+.signup-box h3 {
+font-size: 1.15rem;
+font-family: 'Segoe UI', sans-serif;
+color: #1a1a2e;
+margin-bottom: 8px;
+font-weight: 700;
+}
+.signup-box .signup-subtitle {
+font-size: 0.9rem;
+color: #555;
+font-family: 'Segoe UI', sans-serif;
+margin-bottom: 20px;
+line-height: 1.5;
+}
+.signup-form {
+display: flex;
+flex-direction: column;
+gap: 14px;
+}
+.signup-input {
+padding: 12px 16px;
+border: 1px solid #d8dde8;
+border-radius: 6px;
+font-size: 0.95rem;
+font-family: 'Segoe UI', sans-serif;
+background: #fff;
+color: #1a1a2e;
+transition: border-color 0.2s;
+outline: none;
+}
+.signup-input:focus { border-color: #4a90d9; }
+.signup-input::placeholder { color: #777; }
+.signup-checkbox-row {
+display: flex;
+align-items: flex-start;
+gap: 10px;
+margin: 4px 0;
+}
+.signup-checkbox-row input[type="checkbox"] {
+margin-top: 3px;
+width: 16px;
+height: 16px;
+accent-color: #4a90d9;
+cursor: pointer;
+flex-shrink: 0;
+}
+.signup-checkbox-row label {
+font-size: 0.82rem;
+color: #666;
+font-family: 'Segoe UI', sans-serif;
+line-height: 1.5;
+cursor: pointer;
+}
+.signup-checkbox-row a {
+color: #4a90d9;
+text-decoration: underline;
+font-size: 0.82rem;
+font-family: 'Segoe UI', sans-serif;
+}
+.signup-checkbox-row a:hover { color: #3a7bc8; }
+.signup-submit {
+align-self: flex-start;
+background: #4a90d9;
+color: #fff;
+border: none;
+padding: 12px 28px;
+border-radius: 6px;
+font-size: 0.92rem;
+font-family: 'Segoe UI', sans-serif;
+font-weight: 600;
+cursor: pointer;
+transition: background 0.2s, opacity 0.2s;
+margin-top: 4px;
+}
+.signup-submit:hover:not(:disabled) { background: #3a7bc8; }
+.signup-submit:disabled {
+background: #c0c8d4;
+cursor: not-allowed;
+opacity: 0.7;
+}
+.signup-success {
+display: none;
+padding: 14px 18px;
+background: #e8f5e9;
+border: 1px solid #a5d6a7;
+border-radius: 6px;
+color: #2e7d32;
+font-family: 'Segoe UI', sans-serif;
+font-size: 0.9rem;
+margin-top: 8px;
+}
+
+/* ===== QUOTE BLOCK ===== */
+.quote-block {
+text-align: center;
+margin: 100px 0 60px;
+padding: 40px 30px;
+border-top: 1px solid #e8e8e8;
+border-bottom: 1px solid #e8e8e8;
+}
+.quote-block blockquote {
+font-family: 'Georgia', serif;
+font-size: 1.35rem;
+font-style: italic;
+color: #1a1a2e;
+line-height: 1.6;
+margin: 0 0 14px 0;
+max-width: 680px;
+margin-left: auto;
+margin-right: auto;
+}
+.quote-block cite {
+font-family: 'Segoe UI', sans-serif;
+font-size: 0.9rem;
+color: #4a90d9;
+font-style: normal;
+font-weight: 600;
+letter-spacing: 0.5px;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+border-top: 1px solid #e8e8e8;
+padding: 36px 50px;
+text-align: center;
+color: #666;
+font-family: 'Segoe UI', sans-serif;
+font-size: 0.85rem;
+max-width: 1100px;
+margin: 0 auto;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+.page-wrapper {
+padding: 32px 20px 60px;
+margin-left: 0;
+max-width: 100%;
+}
+.navbar {
+padding: 14px 20px;
+flex-wrap: wrap;
+gap: 10px;
+}
+.navbar-center {
+position: static;
+transform: none;
+order: 3;
+width: 100%;
+justify-content: center;
+margin-top: 10px;
+flex-wrap: wrap;
+gap: 14px;
+}
+.page-title { font-size: 1.8rem; }
+.signup-box { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== SKIP LINK ===== -->
+<a href="#main-content" class="skip-link">Перейти к основному контенту</a>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" aria-label="Основная навигация">
+<div class="navbar-left">
+<a href="#" class="navbar-brand">МатВестник</a>
+<div class="navbar-search" data-tooltip="Поиск появится после запуска" tabindex="0" role="button" aria-label="Поиск (в разработке)">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+</svg>
+<span>Поиск...</span>
+</div>
+</div>
+<ul class="navbar-center">
+<li><a href="#" data-tooltip="Раздел в разработке">Элементарная алгебра</a></li>
+<li><a href="#" data-tooltip="Раздел в разработке">Геометрия</a></li>
+<li><a href="#" data-tooltip="Раздел в разработке">Математический анализ</a></li>
+</ul>
+<div class="navbar-right">
+<a href="#" class="navbar-notes" data-tooltip="Раздел в разработке">Мои заметки</a>
+</div>
+</nav>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="page-wrapper" id="main-content">
+<h1 class="page-title">Здесь формируется научно-образовательный ресурс по математике</h1>
+
+<div class="status-badge">
+<span class="status-dot"></span>
+Проект в разработке
+</div>
+
+<div class="abstract-box">
+<h2>О проекте</h2>
+<p>
+<strong>МатВестник</strong> — это научно-образовательный ресурс по математике, объединяющий полное теоретическое изложение, практические инструменты и персональное пространство для работы с учебным материалом.
+</p>
+<p>
+<strong>Цель</strong> — заменить фрагментарное изучение по разрозненным источникам системным подходом, где каждое новое понятие естественно вытекает из предыдущего,
+а математика раскрывается как связная дисциплина с внутренней логикой и историей развития.
+</p>
+</div>
+
+<div class="page-body">
+<h2>Для кого этот ресурс</h2>
+<ul class="audience-list">
+<li><strong>Ученики средней и старшей школы</strong> с углублённым изучением математики — физико-математические лицеи, специализированные классы, участники олимпиад</li>
+<li><strong>Студенты младших курсов</strong> технических и математических направлений, которым важно не просто систематизировать пройденное, но и понять материал на уровне, достаточном для работы с первоисточниками</li>
+<li><strong>Люди, увлечённые математикой</strong>, готовые разбираться в доказательствах, осмыслять формальные определения и выстраивать внутреннюю логику предмета</li>
+<li><strong>Преподаватели математики</strong>, ищущие системное изложение материала для углубления собственной методической базы</li>
+</ul>
+<p>
+МатВестник не ставит своей целью подготовку к конкретным экзаменам или олимпиадам.
+Ресурс ориентирован на глубокое понимание математики как единой структуры знаний.
+</p>
+
+<hr class="section-divider">
+
+<h2>Когда запустится</h2>
+<p>
+МатВестник запустится по мере готовности материалов и функциональности. 
+Мы не устанавливаем искусственных сроков, чтобы не жертвовать качеством.
+</p>
+<p>
+Следите за обновлениями этой страницы, чтобы своевременно узнать о запуске ресурса.
+</p>
+
+
+<!-- ===== QUOTE ===== -->
+<div class="quote-block">
+<blockquote>
+«Никакое человеческое исследование не может называться истинной наукой, если оно не прошло через математические доказательства»
+</blockquote>
+<cite>— Леонардо да Винчи</cite>
+</div>
+</div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+<p>© 2026 МатВестник — Научно-образовательный ресурс по математике.</p>
+</footer>
+
+<script>
+document.querySelectorAll('.navbar-center a, .navbar-brand, .navbar-notes').forEach(link => {
+link.addEventListener('click', function(e) {
+e.preventDefault();
+});
+});
+
+function toggleSubmit() {
+const consent = document.getElementById('signupConsent').checked;
+const submitBtn = document.getElementById('signupSubmit');
+submitBtn.disabled = !consent;
+}
+
+function handleSignup(e) {
+e.preventDefault();
+const consent = document.getElementById('signupConsent').checked;
+const email = document.getElementById('signupEmail').value.trim();
+if (!consent || !email) return false;
+document.getElementById('signupSuccess').style.display = 'block';
+document.getElementById('signupForm').reset();
+document.getElementById('signupSubmit').disabled = true;
+return false;
+}
+</script>
+</body>
+</html>
